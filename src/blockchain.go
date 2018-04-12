@@ -63,12 +63,12 @@ func (bc *BlockChain) Iterator() *BlockChainIterator {
 }
 
 func (i *BlockChainIterator) Next() *Block {
-	var block Block
+	var block *Block
 
 	err := i.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blockBucket))
 		encodedBlock := b.Get(i.currentHash)
-		block = Deserialize(encodedBlock)
+		block = DeserializeBlock(encodedBlock)
 
 		return nil
 	})
@@ -83,7 +83,7 @@ func (i *BlockChainIterator) Next() *Block {
 }
 
 func dbExists() bool {
-	if _, err := os.Stat(dbFile); os.IsNotExist() {
+	if _, err := os.Stat(dbFile); os.IsNotExist(err) {
 		return false
 	}
 	return true
