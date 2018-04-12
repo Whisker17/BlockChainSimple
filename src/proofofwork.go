@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"fmt"
 	"math"
 	"math/big"
-	"bytes"
-	"fmt"
-	"crypto/sha256"
 )
 
 //
@@ -14,15 +14,15 @@ const targetBits = 24
 const maxNonce = math.MaxInt64
 
 type ProofOfWork struct {
-	block *Block
+	block  *Block
 	target *big.Int
 }
 
-func NewProofOfWork(b *Block) *ProofOfWork{
+func NewProofOfWork(b *Block) *ProofOfWork {
 	target := big.NewInt(1)
-	target.Lsh(target,uint(256-targetBits))
+	target.Lsh(target, uint(256-targetBits))
 
-	pow := &ProofOfWork{b,target}
+	pow := &ProofOfWork{b, target}
 
 	return pow
 }
@@ -41,12 +41,12 @@ func (pow *ProofOfWork) prepareData(nonce int) []byte {
 	return data
 }
 
-func (pow *ProofOfWork) Run() (int,[]byte) {
+func (pow *ProofOfWork) Run() (int, []byte) {
 	var hashInt big.Int
 	var hash [32]byte
 	nonce := 0
 
-	fmt.Printf("Mining the block containing \"%s\"\n",pow.block.Data)
+	fmt.Printf("Mining the block containing \"%s\"\n", pow.block.Data)
 
 	for nonce < maxNonce {
 		data := pow.prepareData(nonce)
@@ -54,7 +54,7 @@ func (pow *ProofOfWork) Run() (int,[]byte) {
 		hashInt.SetBytes(hash[:])
 
 		if hashInt.Cmp(pow.target) == -1 {
-			fmt.Printf("\r%x",hash)
+			fmt.Printf("\r%x", hash)
 			break
 		} else {
 			nonce++
@@ -62,7 +62,7 @@ func (pow *ProofOfWork) Run() (int,[]byte) {
 	}
 	fmt.Printf("\n\n")
 
-	return nonce,hash[:]
+	return nonce, hash[:]
 }
 
 func (pow *ProofOfWork) Validate() bool {
