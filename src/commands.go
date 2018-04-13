@@ -1,11 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"strconv"
-)
-
-func (cli *CLI) addBlock(data string) {
+/*func (cli *CLI) addBlock(data string) {
 	cli.bc.AddBlock(data)
 	fmt.Println("Success")
 }
@@ -27,4 +22,4 @@ func (cli *CLI) printChain() {
 			break
 		}
 	}
-}
+}*/
