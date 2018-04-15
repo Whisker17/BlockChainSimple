@@ -8,7 +8,7 @@ import (
 	"math/big"
 )
 
-//
+//即挖矿的难度系数，也就是开头会有多少个0
 const targetBits = 24
 
 const maxNonce = math.MaxInt64
@@ -18,6 +18,7 @@ type ProofOfWork struct {
 	target *big.Int
 }
 
+//256是一个SHA-256哈希的位数，左移（256-tagetBits）位
 func NewProofOfWork(b *Block) *ProofOfWork {
 	target := big.NewInt(1)
 	target.Lsh(target, uint(256-targetBits))
@@ -53,6 +54,7 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 	for nonce < maxNonce {
 		data := pow.prepareData(nonce)
 		hash = sha256.Sum256(data)
+		//将哈希转换成一个大整数
 		hashInt.SetBytes(hash[:])
 
 		if hashInt.Cmp(pow.target) == -1 {
